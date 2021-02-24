@@ -28,7 +28,7 @@ Group["B"] = "버프된 가렌"
 print(Group)
 
 #키에 저장된 자료의 삭제
-del Group["A"]
+
 print(Group)
 
 #Key들만 출력

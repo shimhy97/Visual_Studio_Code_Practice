@@ -29,13 +29,13 @@
 
 # -----가변인자
 
-def profile (name, age, lang1, lang2, lang3, lang4, lang5):
-    print("이름 : {} \t 나이 : {} \t 언어 : {}".format(name,age), end="")   #end는 해당 명령어가 출력된 후 줄바꿈을 하지 않고 이어서 출력시켜줌.
-    print(lang1,lang2,lang3,lang4,lang5)
+# def profile (name, age, lang1, lang2, lang3, lang4, lang5):
+#     print("이름 : {} \t 나이 : {} \t 언어 : {}".format(name,age), end="")   #end는 해당 명령어가 출력된 후 줄바꿈을 하지 않고 이어서 출력시켜줌.
+#     print(lang1,lang2,lang3,lang4,lang5)
 
-profile("유재석",26,"C","C++","python")            #문제점 : 입력할 수 있는 언어 갯수는 5갠데 3개만 해놓으니 오류가 뜬다
+# profile("유재석",26,"C","C++","python")            #문제점 : 입력할 수 있는 언어 갯수는 5갠데 3개만 해놓으니 오류가 뜬다
 
-profile("유재석",26,"C","C++","python","","","")   # 꼭 이래야만 하는걸까? 혹은, 언어가 6개 이상이 되면? 이럴때 쓸 수 있는 것이 가변인자이다.
+# profile("유재석",26,"C","C++","python","","","")   # 꼭 이래야만 하는걸까? 혹은, 언어가 6개 이상이 되면? 이럴때 쓸 수 있는 것이 가변인자이다.
 
 
 def profile (name, age, *language):             #*로 시작하는 변수를 도입함으로써 크기가 맘대로인 변수 생성 가능

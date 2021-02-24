@@ -1,29 +1,40 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Point3D {
+    float x;
+    float y;
+    float z;
+};
 
 int main()
 {
-    int numArr[5];
-    int smallestNumber;
+    void *ptr = malloc(sizeof(struct Point3D) * 3);
+    struct Point3D p[3];
+    float result1, result2;
 
-    scanf("%d %d %d %d %d", &numArr[0], &numArr[1], &numArr[2], &numArr[3], &numArr[4]);
-    int(size) = sizeof(numArr)/sizeof(int) ;    
- 
+    scanf("%f %f %f %f %f %f %f %f %f", 
+        &p[0].x, &p[0].y, &p[0].z, 
+        &p[1].x, &p[1].y, &p[1].z, 
+        &p[2].x, &p[2].y, &p[2].z
+    );
 
-   for( i= 0;, i <= size-2;, i +=1;)
-{
-int temp=numArr[0];
- if( temp < numArr[i+1])
-    temp = numArr[i];
- else
-    temp = numArr[i+1];
+    memcpy(ptr, p, sizeof(struct Point3D) * 3);
+    memset(p, 0, sizeof(struct Point3D) * 3);
 
-}
-smallestNumber = temp;
-
+    // 방법 1: 포인터 연산으로 취급
+    result1 = ((struct Point3D*)ptr + 1)->x;
+    result2 = ((struct Point3D*)ptr + 2)->z;
+    // 방법 2: 배열로서 취급
+    // result1 = ((struct Point3D*)ptr)[1].x;
+    // result2 = ((struct Point3D*)ptr)[2].z;
 
 
-    printf("%d\n", smallestNumber);
+    printf("%.1f %.1f\n", result1, result2);
+
+    free(ptr);
 
     return 0;
 }
