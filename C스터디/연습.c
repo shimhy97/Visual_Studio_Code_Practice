@@ -3,38 +3,54 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Point3D {
-    float x;
-    float y;
-    float z;
-};
+int getFileSize(FILE *fp)
+{
+    int size;
+    int currPos = ftell(fp);
+
+    fseek(fp, 0, SEEK_END);
+    size = ftell(fp);
+
+    fseek(fp, currPos, SEEK_SET);
+
+    return size;
+}
+
+char *getData(int offset, int size, int *count, FILE *fp)
+{   
+    
+    // count = malloc(size + 1);    
+    // memset(count, 0, size + 1); 
+
+    // fseek(fp, 0, SEEK_SET); 
+    // count = fread(buffer, size, 1, fp);
+    // return count;
+
+char* buffer = malloc(size + 1);
+memset(buffer, 0, size + 1);
+*count=fread(buffer, 1, size, fp);
+
+return buffer;
+
+}
 
 int main()
 {
-    void *ptr = malloc(sizeof(struct Point3D) * 3);
-    struct Point3D p[3];
-    float result1, result2;
+    char *buffer;
+    int size;
+    int count;
 
-    scanf("%f %f %f %f %f %f %f %f %f", 
-        &p[0].x, &p[0].y, &p[0].z, 
-        &p[1].x, &p[1].y, &p[1].z, 
-        &p[2].x, &p[2].y, &p[2].z
-    );
+    FILE *fp = fopen("words.txt", "r");
 
-    memcpy(ptr, p, sizeof(struct Point3D) * 3);
-    memset(p, 0, sizeof(struct Point3D) * 3);
+    size = getFileSize(fp);
+    buffer = getData(0, size, &count, fp);
+ 
+    printf("%s\n", buffer);
+    printf("%d", count);
 
-    // 방법 1: 포인터 연산으로 취급
-    result1 = ((struct Point3D*)ptr + 1)->x;
-    result2 = ((struct Point3D*)ptr + 2)->z;
-    // 방법 2: 배열로서 취급
-    // result1 = ((struct Point3D*)ptr)[1].x;
-    // result2 = ((struct Point3D*)ptr)[2].z;
+    fclose(fp);
 
-
-    printf("%.1f %.1f\n", result1, result2);
-
-    free(ptr);
+    free(buffer);
 
     return 0;
 }

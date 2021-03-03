@@ -85,7 +85,7 @@ add_to_dict(my_english_dict, "kimchi")
 # Should work.
 print('\nadd_to_dict(my_english_dict, "kimchi", "The source of life."):')
 add_to_dict(my_english_dict, "kimchi", "The source of life.")
-print(my_english_dict)
+
 
 # Should not work. kimchi is already on the dict
 print('\nadd_to_dict(my_english_dict, "kimchi", "My fav. food"):')
