@@ -9,7 +9,7 @@ res = requests.get("https://comic.naver.com/webtoon/weekday.nhn")
 res.raise_for_status()
 # print(res.status_code)
 
-with open ("./webscraping_basic/naver.html", "w",  encoding="utf8") as f:
+with open ("naver.html", "w",  encoding="utf8") as f:
     f.write(res.text)
 
 soup = BeautifulSoup(res.text, "lxml") # 우리가 가져온 res.text를 lxml라는 파써를 통해서 뷰티풀숲 객체로 만든것.
