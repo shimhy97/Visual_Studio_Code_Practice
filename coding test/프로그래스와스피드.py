@@ -53,9 +53,7 @@ def front_work_fin(progresses):
         if i >= 100:
             check=(n,i)
 
-    # if len(check)==0: # 100프로가 없으면?
-    #     return 0
-    # elif len(check)!=0: # 100프로가 없으면? 근데 이미 퍼센티지 검사 있는데 이거 넣어야되나?
+
 
     for n,i in enumerate(progresses[:check[0]]) :     #100프로 넘는게 리스트에서 몇번째에 있지?
         if i>=100:
