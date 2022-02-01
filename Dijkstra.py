@@ -24,6 +24,7 @@ def find_shortest_path(graph,start,end):
     last_node = len(graph)
 
     # 3개의 저장 빈 공간 필요. === 1.출발지부터 각 노드까지의 거리 저장 공간, 2.방문 정보 저장 공간, 3.경로 출력을 위한 이전 경로 저장 공간.
+    
     distances={}
     visit_history = {}
     before_node = {}
@@ -40,25 +41,23 @@ def find_shortest_path(graph,start,end):
     visit_history[start]='visited' # 출발 노드는 바로 방문 처리
     node = start  #출발 노드 설정
     
-    #본격적인 작업
-    while 'not_visited' in visit_history.values(): # 방문하지 않은 노드가 없을때까지 반복.
+    #본격적인 알고리즘
+    while 'not_visited' in visit_history.values(): # 방문하지 않은 노드가 없을때까지 반복
 
-        for d in graph[node]:#이동한 노드에 대해서 또 반복 해야지. 근데 이제 여기선 cost를 비교하는 과정이 들어간다.
-                             # 이때 d는 연결상태를 나타내는 원소 2개짜리 리스트이다. d[0],d[1]. 
+        for d in graph[node]:# d는 연결상태를 나타내는 원소 2개짜리 리스트이다. d[0],d[1]. 
                              # 예를들어 graph[4]는 4번 노드와 주변 노드와의 연결 정보를 알려준다.
-                             # d[0]        d[1]
+                             # d[0]        d[1] 
                              # 1번까지 거리 9,
                              # 2번까지 거리 6 
                              # 3번까지 거리 14, 
                              # 7번까지 거리 8을 의미한다.
 
             temp_distance = distances[node] + d[1]
-            if temp_distance < distances[d[0]]:  # 현재 노드에서 다른 노드까지 가는 거리와 이미 저장되어 있는 거리 정보와 비교.
+            if temp_distance < distances[d[0]]:  # 현재 노드에서 다른 노드까지 가는 거리 temp_distance와 
+                                                 # 이미 저장되어 있는 거리 정보 distances[d[0]]와 비교.
                 distances[d[0]] = temp_distance  #더 짧은 경로가 있으면? 갱신.
-                # visit_history[d[0]]='confirmed'
                 before_node[d[0]] = node
-                # print(distances[d[0]])
-
+     
         min_distance = INF
         min_node = 0
         for j in graph:  #모든 노드를 돌며, 거리가 최소이면서 방문하지 않은 노드를 찾는 과정. 그 후 이 노드로 이동해야 하므로 노드 번호를 반환.
@@ -66,10 +65,10 @@ def find_shortest_path(graph,start,end):
                 min_distance = distances[j] 
                 min_node = j
 
-        node = min_node
-        visit_history[node] = 'visited' # 이동
+        node = min_node # 이동
+        visit_history[node] = 'visited' 
 
-
+    #경로 출력 부분
     trace = []
     n = end
     while n != start:
