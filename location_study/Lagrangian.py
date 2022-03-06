@@ -12,9 +12,9 @@ graph = np.array(
     ]
 )
 demand = np.array([10,8,22,18,7,55])
-distance = 10
-P = 2
-alpha = 2
+distance = 10  #covering distance
+P = 2   # number of facilities
+alpha = 2  
 inf = 1e9
 iteration = 0
 alpha_iteration = 0
@@ -23,10 +23,8 @@ lower_bound=[]
 zero_array = [0]*6
 max_iteration = 4
 
-
 a_ij = np.where(graph<=10,1,0)
 X_list = np.array([1,1,0,0,0,0])
-# print(a_ij)
 
 # X_j column 
 def find_X_j(series):
@@ -53,21 +51,24 @@ def find_LB(df):
         elif i==0:
             arr.append(0)
     return arr
-    
+#find t_n, step size
+def find_t_n(df):
+    t_n = alpha*(UB-LB)/sum((df['sigma(aX)-Z']**2))
+    return t_n
+
+#display option
 pd.set_option('display.max_columns', None)  # or 1000
 pd.set_option('display.max_rows', None)  # or 1000
 pd.set_option('display.max_colwidth', None)  # or 199
 
-# Dataframe 생성
-# column_list = ['h_i','lambda_i','Z_i','(h_i-lambda_i)*Z_i','sigma(a*lambda)','X_j','sigma(a*lambda)X_j','sigma(aX)','sigma(aX)-Z','LB']
+# Create Dataframe
 index_list = ['A','B','C','D','E','F']
 table = np.zeros((len(index_list),1))
 
 df = pd.DataFrame(table)
 df.index = index_list
-# df.columns=column_list
 
-#초기값 생성
+#초기 Dataframe 생성
 df['h_i'] = demand
 h_bar = df['h_i'].mean()
 df['lambda_i']=np.array([h_bar+0.5*(i-h_bar) for i in df['h_i']])
@@ -86,14 +87,10 @@ lower_bound.append(df['LB'].max())
 UB = min(upper_bound)
 LB = max(lower_bound)
 
-#t 생성
-t_n = alpha*(UB-LB)/sum((df['sigma(aX)-Z']**2))
-#1st iteration 종료 -------
-print("초기값 df:", df)
 
 #iteration을 통한 새로운 df 생성. -------
 #lambda_i+1
-def find_next_sheet(df):
+def find_next_sheet(df,t_n):
     s1=df['zero_array']
     s2=df['lambda_i']-t_n*df['sigma(aX)-Z']
     s3=pd.concat([s1, s2],ignore_index=True, axis=1).max(axis=1)
@@ -115,24 +112,37 @@ def find_next_bound(df):
     LB = max(lower_bound)
     return UB,LB
 
-# print(upper_bound,lower_bound)
-# print(t_n)
-
 # iteration
-while abs(LB-UB)>0.1 and alpha < 00.1 and alpha_iteration<max_iteration:
-    alpha_iteration +=1  # 요게 max가 되면 계산 종료
-    iteration +=1
-    df=find_next_sheet(df)  # df 갱신
-    UB_new, LB_new = find_next_bound(df) # bound 갱신
-    # while True:     # iteration을 계속 진행할지, 아니면 alpha를 바꿀지를 결정하는 단계
-    if UB_new < UB :  # 좋아지면?
-        alpha_iteration = 0 # 알파 카운팅횟수 초기화
-        t_n = alpha*(UB-LB)/sum((df['sigma(aX)-Z']**2))
-        UB,LB  = UB_new,LB_new     # UB, LB 값 더 좋아졌으니 Best 값 갱신
-        print(UB,LB)
-    elif UB_new >= UB or alpha_iteration == max_iteration: # 안좋아지면?
-        alpha *=0.5
-        t_n = alpha*(UB-LB)/sum((df['sigma(aX)-Z']**2))
-        print(UB,LB)
+while abs(LB-UB)>1 and alpha > 0.1 and alpha_iteration<max_iteration:
+    
+    if iteration >=1:   # 처음엔 그냥 보낸다.
+        df=find_next_sheet(df,t_n)  # df 갱신   # lambda, Zn, (h-lambda).....(sigma_aij - Z )
+        UB, LB = find_next_bound(df) # bound 갱신
 
+    while UB_temp >= UB and iteration >= 1:     # alpha 값을 유지한 채 iteration을 계속 진행할지, 아니면 alpha를 바꿀지를 결정하는 단계
+                            # 안좋아지면, 알파값을 계속 절반으로 만드는 단계이다.
+        alpha_iteration+=1
+        alpha *=0.5
+        t_n_temp = find_t_n(df) # t_n 갱신
+        df_temp = find_next_sheet(df,t_n_temp)
+        UB_temp, LB_temp = find_next_bound(df_temp)
+        print("{0}-{1}. UB가 좋아지지 않아 alpha를 갱신합니다.".format(iteration,alpha_iteration))
+        print("alpha 값은 {0} 입니다".format(alpha))
+
+    #t_n 갱신
+    t_n = find_t_n(df)
+
+    alpha_iteration = 0 
+    iteration +=1
+    if iteration == 1 :
+        print("1번째 초기값입니다.")
+    elif iteration >=2 :
+        print("{0}번째 반복입니다. UB가 개선되었습니다.".format(iteration))
+    print("LB:{0},UB:{1:.3f},alpha:{2:.3f},t_n:{3:.3f}".format(LB,UB,alpha,t_n))
+    print(df)
+    print("---------------------------------------------------")
+
+
+print("-----FINAL_RESULT-----")
+print("LB:{0},UB:{1:.3f},alpha:{2:.3f},t_n:{3:.3f}".format(LB,UB,alpha,t_n))
 print(df)

@@ -1,41 +1,52 @@
+## 본 파일은 Myopic Algorithm에 사용되는 다익스트라 알고리즘 제작을 위해, v1의 내용을 개선함.
+
+# 개선사항 (22/02/28) :
+# read_graph 부분 함수화
+# 경로 탐색 부분 삭제 --> 따라서 메인 함수 실행 부분에 end 변수가 빠짐
+
+
 import os
 import numpy as np
+import pandas as pd
 # 메모장의 그래프 정보를 불러오기
 
+def read_graph(graph_file):
+    with open(graph_file,'r') as file:
+        lines = file.readlines()
+        node_number = int(lines[-1].split()[0]) + 1
+        graph = {}
+        for i in range(node_number):
+            graph.setdefault(int(i),[])
+        # print(lines)
+        for line in lines:
+            load = line.strip("\n").split()
+            # print(load)
+            a,b,c = int(load[0]),int(load[1]),int(load[2])
+            # print(a,b,c)
 
-with open('C:\\Users\\shimh\\OneDrive\\바탕 화면\\Coding\\Visual_Studio_Code_Practice\\location_study\\graph.txt','r') as file:
-    lines = file.readlines()
-    last_node = int(lines[-1][0])
-    graph = {}
-    for i in range(last_node+1):
-        graph.setdefault(int(i),[])
-    # print(lines)
-    for line in lines:
-        load = line.strip("\n").split()
-        # print(load)
-        a,b,c = int(load[0]),int(load[1]),int(load[2])
-        # print(a,b,c)
-     
-        graph[a].append([b,c])
+            graph[a].append([b,c])
 
-def find_shortest_path(graph,start,end):
+    return graph,node_number
+
+graph,node_number = read_graph('graph_figure6-11.txt')
+# print(graph)
+
+def find_shortest_path(graph,start):
     INF = int(1e9)
-    last_node = len(graph)
-
-    # 3개의 저장 빈 공간 필요. === 1.출발지부터 각 노드까지의 거리 저장 공간, 2.방문 정보 저장 공간, 3.경로 출력을 위한 이전 경로 저장 공간.
-    
-    distances={}
-    visit_history = {}
-    before_node = {}
+    # 3개의 저장 빈 공간 필요.
+    distances={}        # 1.출발지부터 각 노드까지의 거리 저장 공간
+    visit_history = {}  # 2.방문 정보 저장 공간, 
+    before_node = {}    # 3.경로 출력을 위한 이전 경로 저장 공간.
 
     # 세개의 dictionary 초기화
-    for i in range(last_node):
+    for i in range(node_number):
         distances.setdefault(int(i),INF)  #거리 저장 노드 생성, 모두 무한대로 초기화
         visit_history.setdefault(int(i),'not_visited') #방문 위치 노드 생성, 모두 "not_visited"로 초기화
 
-    for i in range(last_node-1):    # 출발지는 이전 노드가 없기 때문에, 크기 -1
+    for i in range(node_number-1):    # 출발지는 이전 노드가 없기 때문에, 크기 -1
         before_node.setdefault(int(i+1),None) #이전 경로 저장 노드 / 연결 정보까지 저장하기 위해 딕셔너리 형태를 쓴다.
 
+    # print(distances)
     distances[start]=0  # 출발지 ~ 출발지의 노드 거리 0으로 선정
     visit_history[start]='visited' # 출발 노드는 바로 방문 처리
     node = start  #출발 노드 설정
@@ -55,7 +66,6 @@ def find_shortest_path(graph,start,end):
             if temp_distance < distances[d[0]]:  # 현재 노드에서 다른 노드까지 가는 거리 temp_distance와 
                                                  # 이미 저장되어 있는 거리 정보 distances[d[0]]와 비교.
                 distances[d[0]] = temp_distance  #더 짧은 경로가 있으면? 갱신.
-                before_node[d[0]] = node
      
         min_distance = INF
         min_node = 0
@@ -67,23 +77,9 @@ def find_shortest_path(graph,start,end):
         node = min_node # 이동
         visit_history[node] = 'visited' 
 
-    #경로 출력 부분
-    trace = []
-    n = end
-    while n != start:
-        trace.append(n)
-        n = before_node[n]
-    trace.append(start)
-    trace.reverse()
-    
-    print("=================탐색 결과=================")
-    print("{0}번 노드에서 각 노드까지의 거리는 다음과 같습니다.".format(start))
-    print(distances)
-    print("{0}번 노드에서 {1}번 노드까지 이동하는 경로는".format(start,end))
-    for v in range(len(trace)-1):
-        print(trace[v],"-> ",end='')
-    print(trace[-1],"입니다.")
+    # print("=================탐색 결과=================")
+    # print("{0}번 노드에서 각 노드까지의 최단거리는 다음과 같습니다.".format(start))
+    # print(distances)
+    return distances.values()
 
-
-start,end = map(int,input("시작 노드와 끝 노드를 입력하세요 : ").split())
-find_shortest_path(graph,start,end)
+find_shortest_path(graph,0)
