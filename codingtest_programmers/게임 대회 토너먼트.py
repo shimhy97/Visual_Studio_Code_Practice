@@ -1,9 +1,9 @@
 import math
 
-def solution(n,a,b):
+def solution(n,a,b,CONSTANT = None):
     
     # 재귀함수의 첫 부분. 끝내는 조건
-
+    
     a = math.ceil(a/2)
     b = math.ceil(b/2)
 

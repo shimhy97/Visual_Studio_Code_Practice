@@ -3,7 +3,7 @@ import numpy as np
 # 메모장의 그래프 정보를 불러오기
 
 
-with open('C:\\Users\\shimh\\OneDrive\\바탕 화면\\Coding\\Visual_Studio_Code_Practice\\location_study\\graph.txt','r') as file:
+with open('graph.txt','r') as file:
     lines = file.readlines()
     last_node = int(lines[-1][0])
     graph = {}
