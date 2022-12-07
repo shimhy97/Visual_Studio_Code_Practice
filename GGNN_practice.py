@@ -22,7 +22,9 @@ def make_graph(num_node):
     for i in range(num_node):
         G.nodes[i]['cost'] = random.randint(1, 10)
     return G
-
+###
+##################
+3################
 # save graph as image
 def save_graph(G, name):
     pos = nx.spring_layout(G)
