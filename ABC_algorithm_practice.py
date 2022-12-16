@@ -33,10 +33,9 @@ class ARTIFICIAL_BEE_COLONY:
         self.BEST_FITNESS_LIST = []
         self.BEST_FOOD_SOURCE_LIST = []
     
-    def Initialize(self):
-        for i in range(self.FOOD_SOURCE):
+        for i in range(self.FOOD_SOURCE): # Initialize trial list
             food_source = []
-            for j in range(self.DIMENSION):
+            for j in range(self.DIMENSION): # Initialize food source list
                 food_source.append(random.uniform(self.LOWER_BOUND,self.UPPER_BOUND))
             self.FOOD_SOURCE_LIST.append(food_source)
             self.FITNESS_LIST.append(fitness(x1 = food_source[0],x2 = food_source[1]))
@@ -58,9 +57,30 @@ class ARTIFICIAL_BEE_COLONY:
                 self.TRIAL_LIST[k] += 1
 
     def Calcuate_Probability(self):
-        pass
+        # Calculate probability of food source
+        for i in range(self.FOOD_SOURCE):
+            self.PROBABILITY_LIST.append(self.FITNESS_LIST[i]/sum(self.FITNESS_LIST))
+
     def Onlooker_Bee(self):
-        pass
+        ''' select random number (r). If r < probability of food source, proceed onlooker bee, if not, select another random number.'''
+        for i in range(self.ONLOOKER_BEE):
+            r = random.uniform(0,1)
+            for j in range(self.FOOD_SOURCE):
+                if r < self.PROBABILITY_LIST[j]:
+                    k = j
+                    break
+            v = random.randint(0,self.DIMENSION-1)
+            new_food_source = self.FOOD_SOURCE_LIST[k][:]
+            new_food_source[v] = self.FOOD_SOURCE_LIST[k][v] + random.uniform(-1,1)*(self.FOOD_SOURCE_LIST[k][v] - self.FOOD_SOURCE_LIST[random.randint(0,self.FOOD_SOURCE-1)][v])
+            new_fitness = fitness(x1 = new_food_source[0],x2 = new_food_source[1])
+            if new_fitness < self.FITNESS_LIST[k]:
+                self.FOOD_SOURCE_LIST[k] = new_food_source
+                self.FITNESS_LIST[k] = new_fitness
+                self.TRIAL_LIST[k] = 0
+            else:
+                self.TRIAL_LIST[k] += 1
+
+        
 
     def Check_Trial_Limit(self):
         pass
@@ -71,7 +91,7 @@ class ARTIFICIAL_BEE_COLONY:
     
     def Run(self):
         while True:
-            self.Initialize()
+    
             self.Employed_Bee()
             self.Calcuate_Probability()
             self.Onlooker_Bee()
