@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 def f(*args):
     x1 = args[0]
     x2 = args[1]
-    return x1**2 - x1*x2 + x2**2 + 2*x1 +4*x2 + 3
+    return -(x1-3)**2-(x2-2)**2 +3*x1*x2
 
 def fitness(x1,x2):
     if f(x1,x2)>0:
